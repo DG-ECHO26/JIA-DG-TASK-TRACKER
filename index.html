@@ -427,7 +427,20 @@ function renderTabs(){
     const { pct } = deptCounts(dept);
     const el = document.createElement('div');
     el.className = 'tab' + (di === activeDept ? ' active' : '');
-    el.innerHTML = `<span>${dept.name}</span><span class="pct">${pct}%</span><span class="tab-x" data-di="${di}">&#10005;</span>`;
+    el.innerHTML = `
+<span>${dept.name}</span>
+
+<button class="rename-dept"
+        data-di="${di}"
+        title="Rename Department"
+        style="background:none;border:none;color:#c9a24b;cursor:pointer;font-size:13px;padding:0 2px;">
+✏️
+</button>
+
+<span class="pct">${pct}%</span>
+
+<span class="tab-x" data-di="${di}">&#10005;</span>
+`;
     el.addEventListener('click', (e) => {
       if(e.target.classList.contains('tab-x')) return;
       activeDept = di;
@@ -452,7 +465,31 @@ function renderTabs(){
     row.style.display = row.style.display === 'flex' ? 'none' : 'flex';
     document.getElementById('newDeptInput').focus();
   });
-  tabs.appendChild(addBtn);
+  tabs.appendChild(addBtn);tabs.querySelectorAll('.rename-dept').forEach(btn => {
+
+    btn.addEventListener('click', function(e){
+
+        e.stopPropagation();
+
+        const di = +this.dataset.di;
+
+        const current = data.departments[di].name;
+
+        const updated = prompt("Rename Department", current);
+
+        if(updated === null) return;
+
+        if(updated.trim() === "") return;
+
+        data.departments[di].name = updated.trim();
+
+        render();
+
+        save();
+
+    });
+
+});
 }
 
 function renderGroups(){
