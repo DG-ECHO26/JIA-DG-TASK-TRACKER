@@ -1,1426 +1,698 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2575.5">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px 'Helvetica Neue'; color: #52ebe8; -webkit-text-stroke: #52ebe8}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px 'Helvetica Neue'; color: #858379; -webkit-text-stroke: #858379; min-height: 14.0px}
-    p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px 'Helvetica Neue'; color: #f6f6f4; -webkit-text-stroke: #ffffff}
-    p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px 'Helvetica Neue'; color: #ef6372; -webkit-text-stroke: #ef6372}
-    p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px 'Helvetica Neue'; color: #8ce951; -webkit-text-stroke: #8ce951}
-    p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px 'Helvetica Neue'; color: #ef6372; -webkit-text-stroke: #ffffff}
-    p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px 'Helvetica Neue'; color: #f6f6f4; -webkit-text-stroke: #ffffff; background-color: #21211f}
-    span.s1 {font-kerning: none; background-color: #21211f}
-    span.s2 {font-kerning: none}
-    span.s3 {font-kerning: none; color: #ef6372; background-color: #21211f; -webkit-text-stroke: 0px #ef6372}
-    span.s4 {font-kerning: none; color: #8ce951; background-color: #21211f; -webkit-text-stroke: 0px #8ce951}
-    span.s5 {font-kerning: none; color: #f6f6f4; background-color: #21211f; -webkit-text-stroke: 0px #ffffff}
-    span.s6 {font-kerning: none; background-color: #181817}
-    span.s7 {font-kerning: none; color: #f6f6f4; background-color: #21211f}
-    span.s8 {font-kerning: none; background-color: #21211f; -webkit-text-stroke: 0px #ef6372}
-  </style>
+<meta charset="UTF-8">
+<title>Ministry Checklist Tracker</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+
+  :root{
+    --black: #0a0908;
+    --gold-1: #f3d98a;
+    --gold-2: #c9a24b;
+    --gold-3: #8a6a2c;
+    --cream: #efe6d3;
+    --cream-dim: #a9a08c;
+    --line: rgba(201,162,75,0.25);
+    --card: #141312;
+    --danger: #b5654f;
+  }
+
+  *{ box-sizing:border-box; }
+
+  body{
+    margin:0;
+    background:
+      radial-gradient(ellipse 900px 500px at 50% -10%, rgba(140,108,45,0.14), transparent 60%),
+      linear-gradient(180deg, #0a0908 0%, #060605 100%);
+    color: var(--cream);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    padding: 36px 20px 80px;
+  }
+
+  .wrap{ max-width: 860px; margin: 0 auto; }
+
+  header{ text-align:center; margin-bottom: 22px; }
+  .eyebrow{
+    font-size: 12px; letter-spacing: 4px; font-weight:600;
+    color: var(--gold-1); text-transform: uppercase;
+  }
+
+  .title-row{
+    display:flex; align-items:center; justify-content:center; gap:10px;
+    margin: 10px 0 6px;
+  }
+  h1{
+    font-family:'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 32px;
+    margin: 0;
+    background: linear-gradient(180deg, #fbeec2 0%, #c9a24b 70%, #7c5e28 100%);
+    -webkit-background-clip: text; background-clip:text; color:transparent;
+  }
+  #titleInput{
+    font-family:'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 32px;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--gold-2);
+    color: var(--gold-1);
+    text-align:center;
+    outline:none;
+    width: 100%;
+    max-width: 520px;
+  }
+  .edit-btn{
+    background:none; border:none; cursor:pointer;
+    color: var(--gold-3); font-size: 15px; padding: 4px;
+    opacity: 0.7;
+  }
+  .edit-btn:hover{ opacity: 1; color: var(--gold-1); }
+  .tag{ color: var(--cream-dim); font-size: 14px; }
+
+  /* Department tabs */
+  .tabs{
+    display:flex; flex-wrap: wrap; justify-content:center; gap:8px;
+    margin: 24px 0 8px;
+  }
+  .tab{
+    position: relative;
+    display:flex; align-items:center; gap:8px;
+    padding: 9px 16px;
+    border-radius: 20px;
+    border: 1px solid var(--line);
+    background: var(--card);
+    color: var(--cream-dim);
+    font-size: 13.5px;
+    font-weight:600;
+    letter-spacing: 0.5px;
+    cursor:pointer;
+    transition: all .15s ease;
+  }
+  .tab .pct{ font-size: 11.5px; color: var(--gold-3); font-variant-numeric: tabular-nums;}
+  .tab.active{
+    background: linear-gradient(180deg, rgba(243,217,138,0.16), rgba(201,162,75,0.06));
+    border-color: var(--gold-2);
+    color: var(--gold-1);
+  }
+  .tab.active .pct{ color: var(--gold-1); }
+  .tab .tab-x{
+    margin-left: 2px; color: var(--cream-dim); opacity:0; font-size:13px;
+  }
+  .tab:hover .tab-x{ opacity: 0.6; }
+  .tab .tab-x:hover{ opacity: 1 !important; color: var(--danger); }
+
+  .tab-add{
+    display:flex; align-items:center; gap:8px;
+    padding: 9px 14px;
+    border-radius: 20px;
+    border: 1px dashed var(--gold-3);
+    background: transparent;
+    color: var(--gold-3);
+    font-size: 13.5px;
+    cursor:pointer;
+  }
+  .tab-add:hover{ color: var(--gold-1); border-color: var(--gold-1); }
+
+  .new-dept-row{
+    display:none;
+    justify-content:center; gap:8px;
+    margin: 10px 0 4px;
+  }
+  .new-dept-row input{
+    background: var(--card);
+    border: 1px solid var(--gold-3);
+    color: var(--cream);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-family:'Inter',sans-serif;
+    font-size: 13.5px;
+    outline:none;
+    width: 220px;
+  }
+  .new-dept-row button{
+    background: linear-gradient(180deg, var(--gold-1), var(--gold-2));
+    border:none; border-radius: 6px;
+    padding: 8px 16px;
+    font-weight:700; font-size:13px;
+    cursor:pointer;
+    color: var(--black);
+  }
+
+  .overall{
+    margin: 22px 0 30px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 18px 22px;
+  }
+  .overall-top{
+    display:flex; justify-content:space-between; align-items:baseline; margin-bottom:10px;
+  }
+  .overall-top .label{ font-size:13px; letter-spacing:2px; color:var(--cream-dim); text-transform:uppercase; font-weight:600;}
+  .overall-top .pct{ font-family:'Playfair Display',serif; font-size:22px; color: var(--gold-1); font-weight:700;}
+  .bar-track{ width:100%; height:8px; background:#242220; border-radius:4px; overflow:hidden;}
+  .bar-fill{ height:100%; background: linear-gradient(90deg, var(--gold-3), var(--gold-1)); border-radius:4px; transition: width .35s ease;}
+
+  .group{
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    margin-bottom: 18px;
+    overflow: hidden;
+  }
+  .group-head{
+    display:flex; justify-content:space-between; align-items:center;
+    padding: 16px 20px;
+    cursor: pointer;
+    user-select:none;
+  }
+  .group-name{
+    font-family:'Playfair Display', serif;
+    font-weight:700;
+    font-size: 18px;
+    color: var(--gold-1);
+    letter-spacing: 0.5px;
+  }
+  .group-meta{ display:flex; align-items:center; gap:14px; }
+  .group-count{ font-size:13px; color:var(--cream-dim); font-variant-numeric: tabular-nums;}
+  .mini-bar{ width:80px; height:6px; background:#242220; border-radius:3px; overflow:hidden;}
+  .mini-fill{ height:100%; background: linear-gradient(90deg, var(--gold-3), var(--gold-1)); }
+  .chev{ color: var(--gold-2); font-size:12px; transition: transform .2s ease; }
+  .chev.open{ transform: rotate(90deg); }
+  .group-del{
+    background:none; border:none; color: var(--cream-dim); cursor:pointer; font-size:15px;
+    padding: 2px 4px; opacity: 0.55;
+  }
+  .group-del:hover{ color: var(--danger); opacity:1; }
+
+  .items{ border-top: 1px solid var(--line); }
+  .item{
+    display:flex; align-items:flex-start; gap:12px;
+    padding: 12px 20px;
+    border-bottom: 1px solid rgba(201,162,75,0.1);
+  }
+  .checkbox{
+    flex: none;
+    width: 20px; height:20px;
+    border-radius: 4px;
+    border: 1.5px solid var(--gold-2);
+    margin-top: 2px;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    background: transparent;
+    transition: background .15s ease, border-color .15s ease;
+  }
+  .checkbox.checked{
+    background: linear-gradient(180deg, var(--gold-1), var(--gold-2));
+    border-color: var(--gold-1);
+  }
+  .checkbox svg{ width:13px; height:13px; opacity:0; }
+  .checkbox.checked svg{ opacity:1; }
+  .item-text{
+    font-size: 15px;
+    line-height: 1.4;
+    color: var(--cream);
+    cursor: pointer;
+    flex: 1;
+  }
+  .item.done .item-text{
+    color: var(--cream-dim);
+    text-decoration: line-through;
+    text-decoration-color: var(--gold-3);
+  }
+  .item-del{
+    background:none; border:none; color: var(--cream-dim); cursor:pointer;
+    font-size: 15px; opacity: 0.4; padding: 0 2px; flex:none;
+  }
+  .item-del:hover{ color: var(--danger); opacity:1; }
+
+  .add-task-row{
+    display:flex; gap:8px; padding: 12px 20px;
+  }
+  .add-task-row input{
+    flex:1;
+    background: #1b1a18;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    color: var(--cream);
+    padding: 9px 12px;
+    font-size: 14px;
+    font-family:'Inter',sans-serif;
+    outline:none;
+  }
+  .add-task-row input:focus{ border-color: var(--gold-2); }
+  .add-task-row button{
+    background: linear-gradient(180deg, var(--gold-1), var(--gold-2));
+    border:none; border-radius: 6px;
+    padding: 0 16px;
+    font-weight:700; font-size: 13px;
+    cursor:pointer; color: var(--black);
+    white-space: nowrap;
+  }
+
+  .add-group-card{
+    display:flex; gap:8px;
+    margin-bottom: 18px;
+  }
+  .add-group-card input{
+    flex:1;
+    background: var(--card);
+    border: 1px dashed var(--gold-3);
+    border-radius: 10px;
+    color: var(--cream);
+    padding: 14px 18px;
+    font-size: 14.5px;
+    font-family:'Inter',sans-serif;
+    outline:none;
+  }
+  .add-group-card input:focus{ border-color: var(--gold-1); border-style: solid; }
+  .add-group-card button{
+    background: transparent;
+    border: 1px solid var(--gold-3);
+    border-radius: 10px;
+    padding: 0 20px;
+    font-weight:700; font-size: 13.5px;
+    cursor:pointer; color: var(--gold-1);
+    white-space:nowrap;
+  }
+  .add-group-card button:hover{ border-color: var(--gold-1); background: rgba(243,217,138,0.08);}
+
+  .empty-dept{
+    text-align:center; color: var(--cream-dim); font-size: 14px;
+    padding: 30px 0 10px;
+  }
+
+  .note{
+    text-align:center;
+    margin-top: 30px;
+    font-size: 12.5px;
+    color: var(--gold-3);
+    letter-spacing: 1px;
+  }
+
+  .loading{ text-align:center; color:var(--cream-dim); padding: 40px 0; font-size:14px;}
+</style>
 </head>
 <body>
-<p class="p1"><span class="s1">&lt;!DOCTYPE html&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1">&lt;</span><span class="s3">html</span><span class="s1"> lang="</span><span class="s4">en</span><span class="s1">"&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p4"><span class="s5">&lt;</span><span class="s1">head</span><span class="s5">&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1">&lt;</span><span class="s3">meta</span><span class="s1"> charset="</span><span class="s4">UTF-8</span><span class="s1">"&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1">&lt;</span><span class="s3">title</span><span class="s1">&gt;Ministry Checklist Tracker&lt;/</span><span class="s3">title</span><span class="s1">&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p4"><span class="s5">&lt;</span><span class="s1">style</span><span class="s5">&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap');</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"> </span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>:root{</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>--black: #0a0908;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>--gold-1: #f3d98a;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>--gold-2: #c9a24b;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>--gold-3: #8a6a2c;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>--cream: #efe6d3;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>--cream-dim: #a9a08c;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>--line: rgba(201,162,75,0.25);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>--card: #141312;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>--danger: #b5654f;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"> </span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>*{ box-sizing:border-box; }</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"> </span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>body{</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>margin:0;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>background:</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>radial-gradient(ellipse 900px 500px at 50% -10%, rgba(140,108,45,0.14), transparent 60%),</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>linear-gradient(180deg, #0a0908 0%, #060605 100%);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>color: var(--cream);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>font-family: 'Inter', sans-serif;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>min-height: 100vh;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>padding: 36px 20px 80px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"> </span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.wrap{ max-width: 860px; margin: 0 auto; }</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"> </span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>header{ text-align:center; margin-bottom: 22px; }</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.eyebrow{</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>font-size: 12px; letter-spacing: 4px; font-weight:600;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>color: var(--gold-1); text-transform: uppercase;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"> </span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.title-row{</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>display:flex; align-items:center; justify-content:center; gap:10px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>margin: 10px 0 6px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>h1{</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>font-family:'Playfair Display', serif;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>font-weight: 700;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>font-size: 32px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s6"><span class="Apple-converted-space">    </span>margin: 0;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>background: linear-gradient(180deg, #fbeec2 0%, #c9a24b 70%, #7c5e28 100%);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>-webkit-background-clip: text; background-clip:text; color:transparent;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>#titleInput{</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>font-family:'Playfair Display', serif;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>font-weight: 700;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>font-size: 32px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>background: transparent;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>border: none;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>border-bottom: 1px solid var(--gold-2);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>color: var(--gold-1);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>text-align:center;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>outline:none;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>width: 100%;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>max-width: 520px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.edit-btn{</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>background:none; border:none; cursor:pointer;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>color: var(--gold-3); font-size: 15px; padding: 4px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>opacity: 0.7;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.edit-btn:hover{ opacity: 1; color: var(--gold-1); }</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.tag{ color: var(--cream-dim); font-size: 14px; }</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"> </span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>/* Department tabs */</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.tabs{</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>display:flex; flex-wrap: wrap; justify-content:center; gap:8px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>margin: 24px 0 8px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.tab{</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>position: relative;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>display:flex; align-items:center; gap:8px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>padding: 9px 16px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>border-radius: 20px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>border: 1px solid var(--line);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>background: var(--card);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>color: var(--cream-dim);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s6"><span class="Apple-converted-space">    </span>font-size: 13.5px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>font-weight:600;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>letter-spacing: 0.5px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>cursor:pointer;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>transition: all .15s ease;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s6"><span class="Apple-converted-space">  </span>.tab .pct{ font-size: 11.5px; color: var(--gold-3); font-variant-numeric: tabular-nums;}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.tab.active{</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>background: linear-gradient(180deg, rgba(243,217,138,0.16), rgba(201,162,75,0.06));</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>border-color: var(--gold-2);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>color: var(--gold-1);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.tab.active .pct{ color: var(--gold-1); }</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.tab .tab-x{</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>margin-left: 2px; color: var(--cream-dim); opacity:0; font-size:13px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s6"><span class="Apple-converted-space">  </span>}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.tab:hover .tab-x{ opacity: 0.6; }</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.tab .tab-x:hover{ opacity: 1 !important; color: var(--danger); }</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"> </span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.tab-add{</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>display:flex; align-items:center; gap:8px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>padding: 9px 14px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>border-radius: 20px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>border: 1px dashed var(--gold-3);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>background: transparent;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s6"><span class="Apple-converted-space">    </span>color: var(--gold-3);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>font-size: 13.5px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>cursor:pointer;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.tab-add:hover{ color: var(--gold-1); border-color: var(--gold-1); }</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"> </span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.new-dept-row{</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>display:none;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>justify-content:center; gap:8px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>margin: 10px 0 4px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.new-dept-row input{</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>background: var(--card);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>border: 1px solid var(--gold-3);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>color: var(--cream);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>padding: 8px 12px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>border-radius: 6px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>font-family:'Inter',sans-serif;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>font-size: 13.5px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>outline:none;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>width: 220px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.new-dept-row button{</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>background: linear-gradient(180deg, var(--gold-1), var(--gold-2));</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>border:none; border-radius: 6px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>padding: 8px 16px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>font-weight:700; font-size:13px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>cursor:pointer;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>color: var(--black);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"> </span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.overall{</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>margin: 22px 0 30px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>background: var(--card);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>border: 1px solid var(--line);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>border-radius: 10px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>padding: 18px 22px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.overall-top{</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>display:flex; justify-content:space-between; align-items:baseline; margin-bottom:10px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.overall-top .label{ font-size:13px; letter-spacing:2px; color:var(--cream-dim); text-transform:uppercase; font-weight:600;}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.overall-top .pct{ font-family:'Playfair Display',serif; font-size:22px; color: var(--gold-1); font-weight:700;}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.bar-track{ width:100%; height:8px; background:#242220; border-radius:4px; overflow:hidden;}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.bar-fill{ height:100%; background: linear-gradient(90deg, var(--gold-3), var(--gold-1)); border-radius:4px; transition: width .35s ease;}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"> </span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.group{</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>background: var(--card);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>border: 1px solid var(--line);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>border-radius: 10px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>margin-bottom: 18px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>overflow: hidden;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.group-head{</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>display:flex; justify-content:space-between; align-items:center;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>padding: 16px 20px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>cursor: pointer;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>user-select:none;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.group-name{</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>font-family:'Playfair Display', serif;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>font-weight:700;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>font-size: 18px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>color: var(--gold-1);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>letter-spacing: 0.5px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.group-meta{ display:flex; align-items:center; gap:14px; }</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.group-count{ font-size:13px; color:var(--cream-dim); font-variant-numeric: tabular-nums;}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.mini-bar{ width:80px; height:6px; background:#242220; border-radius:3px; overflow:hidden;}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.mini-fill{ height:100%; background: linear-gradient(90deg, var(--gold-3), var(--gold-1)); }</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.chev{ color: var(--gold-2); font-size:12px; transition: transform .2s ease; }</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.chev.open{ transform: rotate(90deg); }</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.group-del{</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>background:none; border:none; color: var(--cream-dim); cursor:pointer; font-size:15px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>padding: 2px 4px; opacity: 0.55;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.group-del:hover{ color: var(--danger); opacity:1; }</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"> </span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.items{ border-top: 1px solid var(--line); }</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.item{</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>display:flex; align-items:flex-start; gap:12px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>padding: 12px 20px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>border-bottom: 1px solid rgba(201,162,75,0.1);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.checkbox{</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>flex: none;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>width: 20px; height:20px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>border-radius: 4px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>border: 1.5px solid var(--gold-2);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>margin-top: 2px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>display:flex; align-items:center; justify-content:center;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>cursor:pointer;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>background: transparent;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>transition: background .15s ease, border-color .15s ease;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.checkbox.checked{</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>background: linear-gradient(180deg, var(--gold-1), var(--gold-2));</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>border-color: var(--gold-1);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.checkbox svg{ width:13px; height:13px; opacity:0; }</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.checkbox.checked svg{ opacity:1; }</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.item-text{</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>font-size: 15px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>line-height: 1.4;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>color: var(--cream);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>cursor: pointer;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>flex: 1;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.item.done .item-text{</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>color: var(--cream-dim);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>text-decoration: line-through;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>text-decoration-color: var(--gold-3);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.item-del{</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>background:none; border:none; color: var(--cream-dim); cursor:pointer;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>font-size: 15px; opacity: 0.4; padding: 0 2px; flex:none;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.item-del:hover{ color: var(--danger); opacity:1; }</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"> </span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.add-task-row{</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>display:flex; gap:8px; padding: 12px 20px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.add-task-row input{</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>flex:1;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>background: #1b1a18;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>border: 1px solid var(--line);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>border-radius: 6px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>color: var(--cream);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>padding: 9px 12px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>font-size: 14px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>font-family:'Inter',sans-serif;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>outline:none;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.add-task-row input:focus{ border-color: var(--gold-2); }</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.add-task-row button{</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>background: linear-gradient(180deg, var(--gold-1), var(--gold-2));</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>border:none; border-radius: 6px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>padding: 0 16px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>font-weight:700; font-size: 13px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>cursor:pointer; color: var(--black);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>white-space: nowrap;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"> </span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.add-group-card{</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>display:flex; gap:8px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>margin-bottom: 18px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.add-group-card input{</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>flex:1;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>background: var(--card);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>border: 1px dashed var(--gold-3);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>border-radius: 10px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>color: var(--cream);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>padding: 14px 18px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>font-size: 14.5px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>font-family:'Inter',sans-serif;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>outline:none;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.add-group-card input:focus{ border-color: var(--gold-1); border-style: solid; }</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.add-group-card button{</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>background: transparent;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s6"><span class="Apple-converted-space">    </span>border: 1px solid var(--gold-3);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>border-radius: 10px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>padding: 0 20px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>font-weight:700; font-size: 13.5px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>cursor:pointer; color: var(--gold-1);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>white-space:nowrap;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.add-group-card button:hover{ border-color: var(--gold-1); background: rgba(243,217,138,0.08);}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"> </span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.empty-dept{</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>text-align:center; color: var(--cream-dim); font-size: 14px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>padding: 30px 0 10px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"> </span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.note{</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>text-align:center;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>margin-top: 30px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>font-size: 12.5px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>color: var(--gold-3);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>letter-spacing: 1px;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"> </span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>.loading{ text-align:center; color:var(--cream-dim); padding: 40px 0; font-size:14px;}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p4"><span class="s5">&lt;/</span><span class="s1">style</span><span class="s5">&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p4"><span class="s5">&lt;/</span><span class="s1">head</span><span class="s5">&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p4"><span class="s5">&lt;</span><span class="s1">body</span><span class="s5">&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1">&lt;</span><span class="s3">div</span><span class="s1"> class="</span><span class="s4">wrap</span><span class="s1">"&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p4"><span class="s5"><span class="Apple-converted-space">  </span>&lt;</span><span class="s1">header</span><span class="s5">&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>&lt;</span><span class="s3">div</span><span class="s1"> class="</span><span class="s4">eyebrow</span><span class="s1">"&gt;Jesus Is Alive Community · Dubai&lt;/</span><span class="s3">div</span><span class="s1">&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>&lt;</span><span class="s3">div</span><span class="s1"> class="</span><span class="s4">title-row</span><span class="s1">"&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>&lt;</span><span class="s3">h1</span><span class="s1"> id="</span><span class="s4">titleDisplay</span><span class="s1">"&gt;Ministry Checklist Tracker&lt;/</span><span class="s3">h1</span><span class="s1">&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>&lt;</span><span class="s3">input</span><span class="s1"> id="</span><span class="s4">titleInput</span><span class="s1">" style="</span><span class="s4">display:none</span><span class="s1">"&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>&lt;</span><span class="s3">button</span><span class="s1"> class="</span><span class="s4">edit-btn</span><span class="s1">" id="</span><span class="s4">titleEditBtn</span><span class="s1">" title="</span><span class="s4">Rename checklist</span><span class="s1">"&gt;&amp;#9998;&lt;/</span><span class="s3">button</span><span class="s1">&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/</span><span class="s3">div</span><span class="s1">&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>&lt;</span><span class="s3">div</span><span class="s1"> class="</span><span class="s4">tag</span><span class="s1">"&gt;2nd Anniversary — Ministry-wide Task Tracker&lt;/</span><span class="s3">div</span><span class="s1">&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p4"><span class="s5"><span class="Apple-converted-space">  </span>&lt;/</span><span class="s1">header</span><span class="s5">&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"> </span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>&lt;</span><span class="s3">div</span><span class="s1"> class="</span><span class="s4">tabs</span><span class="s1">" id="</span><span class="s4">tabs</span><span class="s1">"&gt;&lt;/</span><span class="s3">div</span><span class="s1">&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p5"><span class="s5"><span class="Apple-converted-space">  </span>&lt;</span><span class="s3">div</span><span class="s5"> class="</span><span class="s1">new-dept-row</span><span class="s5">" id="</span><span class="s1">newDeptRow</span><span class="s5">"&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>&lt;</span><span class="s3">input</span><span class="s1"> id="</span><span class="s4">newDeptInput</span><span class="s1">" placeholder="</span><span class="s4">New department name…</span><span class="s1">" maxlength="</span><span class="s4">40</span><span class="s1">"&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>&lt;</span><span class="s3">button</span><span class="s1"> id="</span><span class="s4">newDeptConfirm</span><span class="s1">"&gt;Add&lt;/</span><span class="s3">button</span><span class="s1">&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>&lt;/</span><span class="s3">div</span><span class="s1">&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"> </span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>&lt;</span><span class="s3">div</span><span class="s1"> class="</span><span class="s4">overall</span><span class="s1">"&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>&lt;</span><span class="s3">div</span><span class="s1"> class="</span><span class="s4">overall-top</span><span class="s1">"&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>&lt;</span><span class="s3">span</span><span class="s1"> class="</span><span class="s4">label</span><span class="s1">" id="</span><span class="s4">overallLabel</span><span class="s1">"&gt;Progress&lt;/</span><span class="s3">span</span><span class="s1">&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>&lt;</span><span class="s3">span</span><span class="s1"> class="</span><span class="s4">pct</span><span class="s1">" id="</span><span class="s4">overallPct</span><span class="s1">"&gt;0%&lt;/</span><span class="s3">span</span><span class="s1">&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/</span><span class="s3">div</span><span class="s1">&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>&lt;</span><span class="s3">div</span><span class="s1"> class="</span><span class="s4">bar-track</span><span class="s1">"&gt;&lt;</span><span class="s3">div</span><span class="s1"> class="</span><span class="s4">bar-fill</span><span class="s1">" id="</span><span class="s4">overallBar</span><span class="s1">" style="</span><span class="s4">width:0%</span><span class="s1">"&gt;&lt;/</span><span class="s3">div</span><span class="s1">&gt;&lt;/</span><span class="s3">div</span><span class="s1">&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>&lt;/</span><span class="s3">div</span><span class="s1">&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"> </span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>&lt;</span><span class="s3">div</span><span class="s1"> id="</span><span class="s4">groups</span><span class="s1">" class="</span><span class="s4">loading</span><span class="s1">"&gt;Loading checklist…&lt;/</span><span class="s3">div</span><span class="s1">&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"> </span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>&lt;</span><span class="s3">div</span><span class="s1"> class="</span><span class="s4">note</span><span class="s1">"&gt;Tap to check off · Use + to add tasks or teams · Shared live with your team&lt;/</span><span class="s3">div</span><span class="s1">&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p6"><span class="s7">&lt;/</span><span class="s8">div</span><span class="s7">&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"> </span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p4"><span class="s5">&lt;</span><span class="s1">script</span><span class="s5">&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1">const STORAGE_KEY = 'jia-ministry-checklist-v2';</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1">const OLD_KEY = 'jia-media-checklist-v1';</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"> </span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1">const DEFAULT_MEDIA_GROUPS = [</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>{ name: 'Unassigned', items: [</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>{ t: 'August postings material (Weekly)', d: false },</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>{ t: 'August postings material (Daily) — Countdown', d: false },</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>{ t: 'Carousel (F.A.Q.)', d: false },</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>{ t: 'Backdrop photobooth', d: false },</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>{ t: 'Foreground photobooth?', d: false },</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>{ t: 'Props photobooth', d: false },</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>]},</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>{ name: 'Ptr. Dan', items: [</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>{ t: 'July Posting (Portrait)', d: true },</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>{ t: 'July Posting (Landscape)', d: true },</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>{ t: "What's next? 2nd day", d: false },</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>{ t: 'Video Testimonies — Aug 1st Sunday', d: false },</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>{ t: 'Video Greetings — Aug 2nd Sunday', d: false },</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>]},</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>{ name: 'Bro. Peter', items: [</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>{ t: 'July Posting (Portrait)', d: false },</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>{ t: 'July Posting (Landscape)', d: false },</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>{ t: 'Poster (Landscape)', d: false },</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>{ t: 'Poster (Portrait)', d: false },</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>{ t: 'Banner', d: false },</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>]},</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>{ name: 'Sis. Eve', items: [</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>{ t: 'July Posting (Portrait)', d: true },</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>{ t: 'July Posting (Landscape)', d: true },</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>{ t: 'Invitation (Portrait)', d: true },</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>{ t: 'Invitation (Landscape)', d: false },</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>{ t: 'ID', d: false },</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>{ t: 'Profile Picture', d: false },</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>{ t: 'Cover Photo', d: false },</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>]},</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>{ name: 'Sis. Elle', items: [</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>{ t: 'July Posting (Portrait)', d: true },</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>{ t: 'July Posting (Landscape)', d: true },</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>{ t: 'Stage Design', d: false },</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>{ t: 'Highlights', d: false },</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>{ t: 'Profile Picture', d: true },</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>{ t: 'Cover Photo', d: true },</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>]},</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>{ name: 'Sis. Cha', items: [</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>{ t: 'July Posting (Portrait)', d: true },</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>{ t: 'July Posting (Landscape)', d: true },</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>{ t: 'What Keeps You Going?', d: false },</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>{ t: 'Profile Picture', d: false },</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>{ t: 'Cover Photo', d: false },</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>]},</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>{ name: 'Sis. Kamisha', items: [</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>{ t: 'July Posting (Portrait)', d: true },</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>{ t: 'July Posting (Landscape)', d: false },</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>{ t: 'Profile Picture', d: false },</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>{ t: 'Cover Photo', d: false },</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>]},</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1">];</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"> </span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1">function defaultData(){</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>return {</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>title: 'Ministry Checklist Tracker',</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>departments: [</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>{ name: 'Media', groups: DEFAULT_MEDIA_GROUPS },</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>{ name: 'Admin', groups: [</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">        </span>{ name: 'Unassigned', items: [] }</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>]},</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>{ name: 'CMA', groups: [</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">        </span>{ name: 'Unassigned', items: [] }</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>]},</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>]</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>};</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1">}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"> </span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1">let data = null;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1">let activeDept = 0;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1">const openState = {}; // key `${deptIdx}-${groupIdx}` -&gt; bool</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"> </span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1">function checkSvg(){</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>return '&lt;svg viewBox="0 0 24 24" fill="none" stroke="#0a0908" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"&gt;&lt;polyline points="20 6 9 17 4 12"&gt;&lt;/polyline&gt;&lt;/svg&gt;';</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1">}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"> </span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1">function computeCounts(items){</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>const done = items.filter(i =&gt; i.d).length;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>return { done, total: items.length, pct: items.length ? Math.round(done/items.length*100) : 0 };</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1">}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"> </span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1">function deptCounts(dept){</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>let done = 0, total = 0;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>dept.groups.forEach(g =&gt; { done += g.items.filter(i=&gt;i.d).length; total += g.items.length; });</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>return { done, total, pct: total ? Math.round(done/total*100) : 0 };</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1">}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"> </span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1">function renderTabs(){</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>const tabs = document.getElementById('tabs');</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>tabs.innerHTML = '';</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>data.departments.forEach((dept, di) =&gt; {</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>const { pct } = deptCounts(dept);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>const el = document.createElement('div');</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>el.className = 'tab' + (di === activeDept ? ' active' : '');</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>el.innerHTML = `&lt;span&gt;${dept.name}&lt;/span&gt;&lt;span class="pct"&gt;${pct}%&lt;/span&gt;&lt;span class="tab-x" data-di="${di}"&gt;&amp;#10005;&lt;/span&gt;`;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>el.addEventListener('click', (e) =&gt; {</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>if(e.target.classList.contains('tab-x')) return;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>activeDept = di;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>render();</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>});</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>el.querySelector('.tab-x').addEventListener('click', (e) =&gt; {</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>e.stopPropagation();</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>if(data.departments.length &lt;= 1) return;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>if(!confirm(`Remove the "${dept.name}" department and all its tasks?`)) return;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>data.departments.splice(di, 1);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>if(activeDept &gt;= data.departments.length) activeDept = data.departments.length - 1;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>render(); save();</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>});</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>tabs.appendChild(el);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>});</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"> </span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>const addBtn = document.createElement('div');</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>addBtn.className = 'tab-add';</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>addBtn.innerHTML = '+ Department';</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>addBtn.addEventListener('click', () =&gt; {</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>const row = document.getElementById('newDeptRow');</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>row.style.display = row.style.display === 'flex' ? 'none' : 'flex';</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>document.getElementById('newDeptInput').focus();</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>});</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>tabs.appendChild(addBtn);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1">}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"> </span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1">function renderGroups(){</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>const dept = data.departments[activeDept];</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>const container = document.getElementById('groups');</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>container.className = '';</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>container.innerHTML = '';</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"> </span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s6"><span class="Apple-converted-space">  </span>const { done, total, pct } = deptCounts(dept);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>document.getElementById('overallLabel').textContent = dept.name + ' Progress';</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>document.getElementById('overallPct').textContent = pct + '%';</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>document.getElementById('overallBar').style.width = pct + '%';</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"> </span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>if(dept.groups.length === 0){</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s6"><span class="Apple-converted-space">    </span>const empty = document.createElement('div');</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>empty.className = 'empty-dept';</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>empty.textContent = 'No teams yet in ' + dept.name + '. Add one below.';</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>container.appendChild(empty);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s6"><span class="Apple-converted-space">  </span>}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"> </span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>dept.groups.forEach((group, gi) =&gt; {</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>const key = activeDept + '-' + gi;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s6"><span class="Apple-converted-space">    </span>const isOpen = openState[key] !== false;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>const c = computeCounts(group.items);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"> </span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s6"><span class="Apple-converted-space">    </span>const groupEl = document.createElement('div');</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>groupEl.className = 'group';</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>groupEl.innerHTML = `</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="group-head" data-gi="${gi}"&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div class="group-name"&gt;${group.name}&lt;/div&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div class="group-meta"&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">          </span>&lt;span class="group-count"&gt;${c.done}/${c.total}&lt;/span&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">          </span>&lt;div class="mini-bar"&gt;&lt;div class="mini-fill" style="width:${c.pct}%"&gt;&lt;/div&gt;&lt;/div&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">          </span>&lt;span class="chev ${isOpen ? 'open' : ''}"&gt;&amp;#9656;&lt;/span&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">          </span>&lt;button class="group-del" data-gi="${gi}" title="Remove team"&gt;&amp;#128465;&lt;/button&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="items" style="display:${isOpen ? 'block' : 'none'}"&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">        </span>${group.items.map((item, ii) =&gt; `</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s6"><span class="Apple-converted-space">          </span>&lt;div class="item ${item.d ? 'done' : ''}" data-gi="${gi}" data-ii="${ii}"&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div class="checkbox ${item.d ? 'checked' : ''}" data-role="check"&gt;${checkSvg()}&lt;/div&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div class="item-text" data-role="text"&gt;${item.t}&lt;/div&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">            </span>&lt;button class="item-del" data-role="del" title="Remove task"&gt;&amp;#10005;&lt;/button&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">        </span>`).join('')}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s6"><span class="Apple-converted-space">        </span>&lt;div class="add-task-row"&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">          </span>&lt;input type="text" placeholder="Add a task…" data-gi="${gi}" maxlength="120"&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">          </span>&lt;button data-gi="${gi}" data-role="addtask"&gt;+ Add&lt;/button&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>`;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>container.appendChild(groupEl);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>});</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"> </span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>// add-group card</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>const addGroupCard = document.createElement('div');</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>addGroupCard.className = 'add-group-card';</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>addGroupCard.innerHTML = `</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>&lt;input type="text" id="newGroupInput" placeholder="Add a team or person (e.g. Sis. Mary)…" maxlength="60"&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>&lt;button id="newGroupConfirm"&gt;+ Add Team&lt;/button&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>`;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>container.appendChild(addGroupCard);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"> </span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>// --- listeners ---</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>container.querySelectorAll('.group-head').forEach(el =&gt; {</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>el.addEventListener('click', (e) =&gt; {</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>if(e.target.closest('.group-del')) return;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>const gi = el.dataset.gi;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>const key = activeDept + '-' + gi;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>openState[key] = !(openState[key] !== false);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>renderGroups();</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>});</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>});</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"> </span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>container.querySelectorAll('.group-del').forEach(btn =&gt; {</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>btn.addEventListener('click', (e) =&gt; {</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>e.stopPropagation();</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>const gi = +btn.dataset.gi;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>const dept = data.departments[activeDept];</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>if(!confirm(`Remove "${dept.groups[gi].name}" and all its tasks?`)) return;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>dept.groups.splice(gi, 1);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>renderTabs(); renderGroups(); save();</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>});</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>});</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"> </span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>container.querySelectorAll('[data-role="check"]').forEach(el =&gt; {</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>el.addEventListener('click', () =&gt; {</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>const item = el.closest('.item');</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>const gi = +item.dataset.gi, ii = +item.dataset.ii;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>dept.groups[gi].items[ii].d = !dept.groups[gi].items[ii].d;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>renderTabs(); renderGroups(); save();</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>});</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>});</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>container.querySelectorAll('[data-role="text"]').forEach(el =&gt; {</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>el.addEventListener('click', () =&gt; {</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>const item = el.closest('.item');</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>const gi = +item.dataset.gi, ii = +item.dataset.ii;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>dept.groups[gi].items[ii].d = !dept.groups[gi].items[ii].d;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>renderTabs(); renderGroups(); save();</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>});</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>});</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>container.querySelectorAll('[data-role="del"]').forEach(el =&gt; {</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>el.addEventListener('click', () =&gt; {</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>const item = el.closest('.item');</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>const gi = +item.dataset.gi, ii = +item.dataset.ii;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>dept.groups[gi].items.splice(ii, 1);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>renderTabs(); renderGroups(); save();</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>});</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>});</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"> </span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>container.querySelectorAll('[data-role="addtask"]').forEach(btn =&gt; {</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>btn.addEventListener('click', () =&gt; addTask(btn.dataset.gi));</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>});</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>container.querySelectorAll('.add-task-row input').forEach(inp =&gt; {</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>inp.addEventListener('keydown', (e) =&gt; {</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>if(e.key === 'Enter') addTask(inp.dataset.gi);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>});</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>});</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"> </span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>function addTask(gi){</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>gi = +gi;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>const input = container.querySelector(`.add-task-row input[data-gi="${gi}"]`);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>const val = input.value.trim();</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>if(!val) return;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>dept.groups[gi].items.push({ t: val, d: false });</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>input.value = '';</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>renderTabs(); renderGroups(); save();</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"> </span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>document.getElementById('newGroupConfirm').addEventListener('click', addGroup);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>document.getElementById('newGroupInput').addEventListener('keydown', (e) =&gt; {</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>if(e.key === 'Enter') addGroup();</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>});</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>function addGroup(){</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>const input = document.getElementById('newGroupInput');</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>const val = input.value.trim();</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>if(!val) return;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>dept.groups.push({ name: val, items: [] });</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>input.value = '';</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>renderTabs(); renderGroups(); save();</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1">}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"> </span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1">function render(){</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>renderTabs();</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>renderGroups();</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1">}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"> </span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1">// --- title editing ---</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1">function setupTitleEditing(){</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>const display = document.getElementById('titleDisplay');</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>const input = document.getElementById('titleInput');</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>const editBtn = document.getElementById('titleEditBtn');</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"> </span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>function enterEdit(){</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>input.value = data.title;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>display.style.display = 'none';</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>input.style.display = 'inline-block';</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>input.focus();</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>input.select();</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>function commit(){</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>const val = input.value.trim();</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>if(val) data.title = val;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>display.textContent = data.title;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>display.style.display = 'inline-block';</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>input.style.display = 'none';</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>save();</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>editBtn.addEventListener('click', enterEdit);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>display.addEventListener('click', enterEdit);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>input.addEventListener('keydown', (e) =&gt; { if(e.key === 'Enter') commit(); });</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>input.addEventListener('blur', commit);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1">}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"> </span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1">// --- new department row ---</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1">document.getElementById('newDeptConfirm').addEventListener('click', addDepartment);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1">document.getElementById('newDeptInput').addEventListener('keydown', (e) =&gt; {</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>if(e.key === 'Enter') addDepartment();</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1">});</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1">function addDepartment(){</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>const input = document.getElementById('newDeptInput');</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>const val = input.value.trim();</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>if(!val) return;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>data.departments.push({ name: val, groups: [{ name: 'Unassigned', items: [] }] });</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>activeDept = data.departments.length - 1;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>input.value = '';</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>document.getElementById('newDeptRow').style.display = 'none';</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>render(); save();</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1">}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"> </span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1">async function save(){</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>try{</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>await withTimeout(window.storage.set(STORAGE_KEY, JSON.stringify(data), true), 5000);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>}catch(e){</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>console.error('Save failed (working offline):', e);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1">}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"> </span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1">function withTimeout(promise, ms){</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>return Promise.race([</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>promise,</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>new Promise((_, reject) =&gt; setTimeout(() =&gt; reject(new Error('storage timeout')), ms))</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>]);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1">}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"> </span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1">async function load(){</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>let usingStorage = true;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>try{</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>const result = await withTimeout(window.storage.get(STORAGE_KEY, true), 5000);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>if(result &amp;&amp; result.value){</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>data = JSON.parse(result.value);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>}else{</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>// attempt migration from old media-only tracker</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>let migratedGroups = null;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>try{</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">        </span>const old = await withTimeout(window.storage.get(OLD_KEY, true), 5000);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">        </span>if(old &amp;&amp; old.value) migratedGroups = JSON.parse(old.value);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>}catch(e){ /* no old data, that's fine */ }</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"> </span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>data = defaultData();</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>if(migratedGroups) data.departments[0].groups = migratedGroups;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">      </span>await withTimeout(save(), 5000);</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>}catch(e){</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>// Storage unavailable, timed out, or viewer isn't signed in — fall back to</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>// a local (non-synced) copy so the checklist still loads instead of spinning forever.</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>usingStorage = false;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>data = defaultData();</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>document.getElementById('titleDisplay').textContent = data.title;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>setupTitleEditing();</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>render();</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>if(!usingStorage){</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s6"><span class="Apple-converted-space">    </span>const note = document.querySelector('.note');</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>note.innerHTML = '⚠️ Working offline — changes here won\'t sync to your team. Open the published link while signed in to Claude to sync.';</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1">}</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1"> </span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p3"><span class="s1">load();</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p4"><span class="s5">&lt;/</span><span class="s1">script</span><span class="s5">&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p4"><span class="s5">&lt;/</span><span class="s1">body</span><span class="s5">&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p4"><span class="s5">&lt;/</span><span class="s1">html</span><span class="s5">&gt;</span></p>
-<p class="p2"><span class="s2"></span><br></p>
-<p class="p7"><span class="s2"> </span></p>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Jesus Is Alive Community · Dubai</div>
+    <div class="title-row">
+      <h1 id="titleDisplay">Ministry Checklist Tracker</h1>
+      <input id="titleInput" style="display:none">
+      <button class="edit-btn" id="titleEditBtn" title="Rename checklist">&#9998;</button>
+    </div>
+    <div class="tag">2nd Anniversary — Ministry-wide Task Tracker</div>
+  </header>
+
+  <div class="tabs" id="tabs"></div>
+  <div class="new-dept-row" id="newDeptRow">
+    <input id="newDeptInput" placeholder="New department name…" maxlength="40">
+    <button id="newDeptConfirm">Add</button>
+  </div>
+
+  <div class="overall">
+    <div class="overall-top">
+      <span class="label" id="overallLabel">Progress</span>
+      <span class="pct" id="overallPct">0%</span>
+    </div>
+    <div class="bar-track"><div class="bar-fill" id="overallBar" style="width:0%"></div></div>
+  </div>
+
+  <div id="groups" class="loading">Loading checklist…</div>
+
+  <div class="note">Tap to check off · Use + to add tasks or teams · Shared live with your team</div>
+</div>
+
+<script>
+const STORAGE_KEY = 'jia-ministry-checklist-v2';
+const OLD_KEY = 'jia-media-checklist-v1';
+
+const DEFAULT_MEDIA_GROUPS = [
+  { name: 'Unassigned', items: [
+    { t: 'August postings material (Weekly)', d: false },
+    { t: 'August postings material (Daily) — Countdown', d: false },
+    { t: 'Carousel (F.A.Q.)', d: false },
+    { t: 'Backdrop photobooth', d: false },
+    { t: 'Foreground photobooth?', d: false },
+    { t: 'Props photobooth', d: false },
+  ]},
+  { name: 'Ptr. Dan', items: [
+    { t: 'July Posting (Portrait)', d: true },
+    { t: 'July Posting (Landscape)', d: true },
+    { t: "What's next? 2nd day", d: false },
+    { t: 'Video Testimonies — Aug 1st Sunday', d: false },
+    { t: 'Video Greetings — Aug 2nd Sunday', d: false },
+  ]},
+  { name: 'Bro. Peter', items: [
+    { t: 'July Posting (Portrait)', d: false },
+    { t: 'July Posting (Landscape)', d: false },
+    { t: 'Poster (Landscape)', d: false },
+    { t: 'Poster (Portrait)', d: false },
+    { t: 'Banner', d: false },
+  ]},
+  { name: 'Sis. Eve', items: [
+    { t: 'July Posting (Portrait)', d: true },
+    { t: 'July Posting (Landscape)', d: true },
+    { t: 'Invitation (Portrait)', d: true },
+    { t: 'Invitation (Landscape)', d: false },
+    { t: 'ID', d: false },
+    { t: 'Profile Picture', d: false },
+    { t: 'Cover Photo', d: false },
+  ]},
+  { name: 'Sis. Elle', items: [
+    { t: 'July Posting (Portrait)', d: true },
+    { t: 'July Posting (Landscape)', d: true },
+    { t: 'Stage Design', d: false },
+    { t: 'Highlights', d: false },
+    { t: 'Profile Picture', d: true },
+    { t: 'Cover Photo', d: true },
+  ]},
+  { name: 'Sis. Cha', items: [
+    { t: 'July Posting (Portrait)', d: true },
+    { t: 'July Posting (Landscape)', d: true },
+    { t: 'What Keeps You Going?', d: false },
+    { t: 'Profile Picture', d: false },
+    { t: 'Cover Photo', d: false },
+  ]},
+  { name: 'Sis. Kamisha', items: [
+    { t: 'July Posting (Portrait)', d: true },
+    { t: 'July Posting (Landscape)', d: false },
+    { t: 'Profile Picture', d: false },
+    { t: 'Cover Photo', d: false },
+  ]},
+];
+
+function defaultData(){
+  return {
+    title: 'Ministry Checklist Tracker',
+    departments: [
+      { name: 'Media', groups: DEFAULT_MEDIA_GROUPS },
+      { name: 'Admin', groups: [
+        { name: 'Unassigned', items: [] }
+      ]},
+      { name: 'CMA', groups: [
+        { name: 'Unassigned', items: [] }
+      ]},
+    ]
+  };
+}
+
+let data = null;
+let activeDept = 0;
+const openState = {}; // key `${deptIdx}-${groupIdx}` -> bool
+
+function checkSvg(){
+  return '<svg viewBox="0 0 24 24" fill="none" stroke="#0a0908" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+}
+
+function computeCounts(items){
+  const done = items.filter(i => i.d).length;
+  return { done, total: items.length, pct: items.length ? Math.round(done/items.length*100) : 0 };
+}
+
+function deptCounts(dept){
+  let done = 0, total = 0;
+  dept.groups.forEach(g => { done += g.items.filter(i=>i.d).length; total += g.items.length; });
+  return { done, total, pct: total ? Math.round(done/total*100) : 0 };
+}
+
+function renderTabs(){
+  const tabs = document.getElementById('tabs');
+  tabs.innerHTML = '';
+  data.departments.forEach((dept, di) => {
+    const { pct } = deptCounts(dept);
+    const el = document.createElement('div');
+    el.className = 'tab' + (di === activeDept ? ' active' : '');
+    el.innerHTML = `<span>${dept.name}</span><span class="pct">${pct}%</span><span class="tab-x" data-di="${di}">&#10005;</span>`;
+    el.addEventListener('click', (e) => {
+      if(e.target.classList.contains('tab-x')) return;
+      activeDept = di;
+      render();
+    });
+    el.querySelector('.tab-x').addEventListener('click', (e) => {
+      e.stopPropagation();
+      if(data.departments.length <= 1) return;
+      if(!confirm(`Remove the "${dept.name}" department and all its tasks?`)) return;
+      data.departments.splice(di, 1);
+      if(activeDept >= data.departments.length) activeDept = data.departments.length - 1;
+      render(); save();
+    });
+    tabs.appendChild(el);
+  });
+
+  const addBtn = document.createElement('div');
+  addBtn.className = 'tab-add';
+  addBtn.innerHTML = '+ Department';
+  addBtn.addEventListener('click', () => {
+    const row = document.getElementById('newDeptRow');
+    row.style.display = row.style.display === 'flex' ? 'none' : 'flex';
+    document.getElementById('newDeptInput').focus();
+  });
+  tabs.appendChild(addBtn);
+}
+
+function renderGroups(){
+  const dept = data.departments[activeDept];
+  const container = document.getElementById('groups');
+  container.className = '';
+  container.innerHTML = '';
+
+  const { done, total, pct } = deptCounts(dept);
+  document.getElementById('overallLabel').textContent = dept.name + ' Progress';
+  document.getElementById('overallPct').textContent = pct + '%';
+  document.getElementById('overallBar').style.width = pct + '%';
+
+  if(dept.groups.length === 0){
+    const empty = document.createElement('div');
+    empty.className = 'empty-dept';
+    empty.textContent = 'No teams yet in ' + dept.name + '. Add one below.';
+    container.appendChild(empty);
+  }
+
+  dept.groups.forEach((group, gi) => {
+    const key = activeDept + '-' + gi;
+    const isOpen = openState[key] !== false;
+    const c = computeCounts(group.items);
+
+    const groupEl = document.createElement('div');
+    groupEl.className = 'group';
+    groupEl.innerHTML = `
+      <div class="group-head" data-gi="${gi}">
+        <div class="group-name">${group.name}</div>
+        <div class="group-meta">
+          <span class="group-count">${c.done}/${c.total}</span>
+          <div class="mini-bar"><div class="mini-fill" style="width:${c.pct}%"></div></div>
+          <span class="chev ${isOpen ? 'open' : ''}">&#9656;</span>
+          <button class="group-del" data-gi="${gi}" title="Remove team">&#128465;</button>
+        </div>
+      </div>
+      <div class="items" style="display:${isOpen ? 'block' : 'none'}">
+        ${group.items.map((item, ii) => `
+          <div class="item ${item.d ? 'done' : ''}" data-gi="${gi}" data-ii="${ii}">
+            <div class="checkbox ${item.d ? 'checked' : ''}" data-role="check">${checkSvg()}</div>
+            <div class="item-text" data-role="text">${item.t}</div>
+            <button class="item-del" data-role="del" title="Remove task">&#10005;</button>
+          </div>
+        `).join('')}
+        <div class="add-task-row">
+          <input type="text" placeholder="Add a task…" data-gi="${gi}" maxlength="120">
+          <button data-gi="${gi}" data-role="addtask">+ Add</button>
+        </div>
+      </div>
+    `;
+    container.appendChild(groupEl);
+  });
+
+  // add-group card
+  const addGroupCard = document.createElement('div');
+  addGroupCard.className = 'add-group-card';
+  addGroupCard.innerHTML = `
+    <input type="text" id="newGroupInput" placeholder="Add a team or person (e.g. Sis. Mary)…" maxlength="60">
+    <button id="newGroupConfirm">+ Add Team</button>
+  `;
+  container.appendChild(addGroupCard);
+
+  // --- listeners ---
+  container.querySelectorAll('.group-head').forEach(el => {
+    el.addEventListener('click', (e) => {
+      if(e.target.closest('.group-del')) return;
+      const gi = el.dataset.gi;
+      const key = activeDept + '-' + gi;
+      openState[key] = !(openState[key] !== false);
+      renderGroups();
+    });
+  });
+
+  container.querySelectorAll('.group-del').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const gi = +btn.dataset.gi;
+      const dept = data.departments[activeDept];
+      if(!confirm(`Remove "${dept.groups[gi].name}" and all its tasks?`)) return;
+      dept.groups.splice(gi, 1);
+      renderTabs(); renderGroups(); save();
+    });
+  });
+
+  container.querySelectorAll('[data-role="check"]').forEach(el => {
+    el.addEventListener('click', () => {
+      const item = el.closest('.item');
+      const gi = +item.dataset.gi, ii = +item.dataset.ii;
+      dept.groups[gi].items[ii].d = !dept.groups[gi].items[ii].d;
+      renderTabs(); renderGroups(); save();
+    });
+  });
+  container.querySelectorAll('[data-role="text"]').forEach(el => {
+    el.addEventListener('click', () => {
+      const item = el.closest('.item');
+      const gi = +item.dataset.gi, ii = +item.dataset.ii;
+      dept.groups[gi].items[ii].d = !dept.groups[gi].items[ii].d;
+      renderTabs(); renderGroups(); save();
+    });
+  });
+  container.querySelectorAll('[data-role="del"]').forEach(el => {
+    el.addEventListener('click', () => {
+      const item = el.closest('.item');
+      const gi = +item.dataset.gi, ii = +item.dataset.ii;
+      dept.groups[gi].items.splice(ii, 1);
+      renderTabs(); renderGroups(); save();
+    });
+  });
+
+  container.querySelectorAll('[data-role="addtask"]').forEach(btn => {
+    btn.addEventListener('click', () => addTask(btn.dataset.gi));
+  });
+  container.querySelectorAll('.add-task-row input').forEach(inp => {
+    inp.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter') addTask(inp.dataset.gi);
+    });
+  });
+
+  function addTask(gi){
+    gi = +gi;
+    const input = container.querySelector(`.add-task-row input[data-gi="${gi}"]`);
+    const val = input.value.trim();
+    if(!val) return;
+    dept.groups[gi].items.push({ t: val, d: false });
+    input.value = '';
+    renderTabs(); renderGroups(); save();
+  }
+
+  document.getElementById('newGroupConfirm').addEventListener('click', addGroup);
+  document.getElementById('newGroupInput').addEventListener('keydown', (e) => {
+    if(e.key === 'Enter') addGroup();
+  });
+  function addGroup(){
+    const input = document.getElementById('newGroupInput');
+    const val = input.value.trim();
+    if(!val) return;
+    dept.groups.push({ name: val, items: [] });
+    input.value = '';
+    renderTabs(); renderGroups(); save();
+  }
+}
+
+function render(){
+  renderTabs();
+  renderGroups();
+}
+
+// --- title editing ---
+function setupTitleEditing(){
+  const display = document.getElementById('titleDisplay');
+  const input = document.getElementById('titleInput');
+  const editBtn = document.getElementById('titleEditBtn');
+
+  function enterEdit(){
+    input.value = data.title;
+    display.style.display = 'none';
+    input.style.display = 'inline-block';
+    input.focus();
+    input.select();
+  }
+  function commit(){
+    const val = input.value.trim();
+    if(val) data.title = val;
+    display.textContent = data.title;
+    display.style.display = 'inline-block';
+    input.style.display = 'none';
+    save();
+  }
+  editBtn.addEventListener('click', enterEdit);
+  display.addEventListener('click', enterEdit);
+  input.addEventListener('keydown', (e) => { if(e.key === 'Enter') commit(); });
+  input.addEventListener('blur', commit);
+}
+
+// --- new department row ---
+document.getElementById('newDeptConfirm').addEventListener('click', addDepartment);
+document.getElementById('newDeptInput').addEventListener('keydown', (e) => {
+  if(e.key === 'Enter') addDepartment();
+});
+function addDepartment(){
+  const input = document.getElementById('newDeptInput');
+  const val = input.value.trim();
+  if(!val) return;
+  data.departments.push({ name: val, groups: [{ name: 'Unassigned', items: [] }] });
+  activeDept = data.departments.length - 1;
+  input.value = '';
+  document.getElementById('newDeptRow').style.display = 'none';
+  render(); save();
+}
+
+async function save(){
+  try{
+    await withTimeout(window.storage.set(STORAGE_KEY, JSON.stringify(data), true), 5000);
+  }catch(e){
+    console.error('Save failed (working offline):', e);
+  }
+}
+
+function withTimeout(promise, ms){
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => setTimeout(() => reject(new Error('storage timeout')), ms))
+  ]);
+}
+
+async function load(){
+  let usingStorage = true;
+  try{
+    const result = await withTimeout(window.storage.get(STORAGE_KEY, true), 5000);
+    if(result && result.value){
+      data = JSON.parse(result.value);
+    }else{
+      // attempt migration from old media-only tracker
+      let migratedGroups = null;
+      try{
+        const old = await withTimeout(window.storage.get(OLD_KEY, true), 5000);
+        if(old && old.value) migratedGroups = JSON.parse(old.value);
+      }catch(e){ /* no old data, that's fine */ }
+
+      data = defaultData();
+      if(migratedGroups) data.departments[0].groups = migratedGroups;
+      await withTimeout(save(), 5000);
+    }
+  }catch(e){
+    // Storage unavailable, timed out, or viewer isn't signed in — fall back to
+    // a local (non-synced) copy so the checklist still loads instead of spinning forever.
+    usingStorage = false;
+    data = defaultData();
+  }
+  document.getElementById('titleDisplay').textContent = data.title;
+  setupTitleEditing();
+  render();
+  if(!usingStorage){
+    const note = document.querySelector('.note');
+    note.innerHTML = '⚠️ Working offline — changes here won\'t sync to your team. Open the published link while signed in to Claude to sync.';
+  }
+}
+
+load();
+</script>
 </body>
 </html>
