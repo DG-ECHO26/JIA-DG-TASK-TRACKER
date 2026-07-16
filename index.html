@@ -427,7 +427,7 @@ function renderTabs(){
     const { pct } = deptCounts(dept);
     const el = document.createElement('div');
     el.className = 'tab' + (di === activeDept ? ' active' : '');
-    el.innerHTML = `<span>${dept.name}</span><span class="pct">${pct}%</span><span class="tab-x" data-di="${di}">&#10005;</span>`;
+    el.innerHTML = `<span class="dept-name" data-di="${di}">${dept.name}</span><span class="pct">${pct}%</span><span class="tab-x" data-di="${di}">&#10005;</span>`;
     el.addEventListener('click', (e) => {
       if(e.target.classList.contains('tab-x')) return;
       activeDept = di;
@@ -454,7 +454,29 @@ function renderTabs(){
   });
   tabs.appendChild(addBtn);
 }
+tabs.querySelectorAll('.dept-name').forEach(name => {
 
+    name.addEventListener('dblclick', () => {
+
+        const di = +name.dataset.di;
+
+        const current = data.departments[di].name;
+
+        const updated = prompt("Rename department:", current);
+
+        if (updated && updated.trim()) {
+
+            data.departments[di].name = updated.trim();
+
+            render();
+
+            save();
+
+        }
+
+    });
+
+});
 function renderGroups(){
   const dept = data.departments[activeDept];
   const container = document.getElementById('groups');
