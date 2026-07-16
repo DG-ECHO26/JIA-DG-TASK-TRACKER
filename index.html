@@ -427,7 +427,8 @@ function renderTabs(){
     const { pct } = deptCounts(dept);
     const el = document.createElement('div');
     el.className = 'tab' + (di === activeDept ? ' active' : '');
-    el.innerHTML = `<span class="dept-name" data-di="${di}">${dept.name}</span><span class="pct">${pct}%</span><span class="tab-x" data-di="${di}">&#10005;</span>`;
+    el.innerHTML = <span>${dept.name}</span>
+<span class="edit-dept" data-di="${di}" style="cursor:pointer;margin-left:6px;">✏️</span>
     el.addEventListener('click', (e) => {
       if(e.target.classList.contains('tab-x')) return;
       activeDept = di;
@@ -453,16 +454,15 @@ function renderTabs(){
     document.getElementById('newDeptInput').focus();
   });
   tabs.appendChild(addBtn);
-  
-tabs.querySelectorAll('.dept-name').forEach(name => {
+  tabs.querySelectorAll('.edit-dept').forEach(btn => {
 
-    name.addEventListener('dblclick', () => {
+    btn.onclick = function () {
 
-        const di = +name.dataset.di;
+        const di = +this.dataset.di;
 
         const current = data.departments[di].name;
 
-        const updated = prompt("Rename department:", current);
+        const updated = prompt("Rename Department", current);
 
         if (updated && updated.trim()) {
 
@@ -474,7 +474,9 @@ tabs.querySelectorAll('.dept-name').forEach(name => {
 
         }
 
-    });
+    };
+
+});
 
 });
 function renderGroups(){
