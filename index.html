@@ -482,7 +482,15 @@ function renderGroups(){
     groupEl.className = 'group';
     groupEl.innerHTML = `
       <div class="group-head" data-gi="${gi}">
-        <div class="group-name">${group.name}</div>
+        <div class="group-name">
+    ${group.name}
+    <button class="rename-group"
+            data-gi="${gi}"
+            title="Rename Team"
+            style="background:none;border:none;color:#c9a24b;cursor:pointer;font-size:14px;margin-left:8px;">
+        ✏️
+    </button>
+</div>
         <div class="group-meta">
           <span class="group-count">${c.done}/${c.total}</span>
           <div class="mini-bar"><div class="mini-fill" style="width:${c.pct}%"></div></div>
@@ -526,7 +534,31 @@ function renderGroups(){
       renderGroups();
     });
   });
+container.querySelectorAll('.rename-group').forEach(btn => {
 
+    btn.addEventListener('click', (e) => {
+
+        e.stopPropagation();
+
+        const gi = +btn.dataset.gi;
+
+        const current = dept.groups[gi].name;
+
+        const updated = prompt("Rename Team", current);
+
+        if(updated === null) return;
+
+        if(updated.trim() === "") return;
+
+        dept.groups[gi].name = updated.trim();
+
+        renderGroups();
+
+        save();
+
+    });
+
+});
   container.querySelectorAll('.group-del').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
