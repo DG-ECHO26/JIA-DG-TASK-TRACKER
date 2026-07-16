@@ -646,7 +646,7 @@ function addDepartment(){
 
 async function save() {
     try {
-        const { error } = await supabase
+        const { error } = await supabaseClient
             .from("checklist")
             .update({
                 data: data,
@@ -665,7 +665,7 @@ async function save() {
 
 async function load() {
     try {
-        const { data: rows, error } = await supabase
+        const { data: rows, error } = await supabaseClient
             .from("checklist")
             .select("*")
             .eq("id", 1)
@@ -678,7 +678,7 @@ async function load() {
         } else {
             data = defaultData();
 
-            await supabase
+            await supabaseClient
                 .from("checklist")
                 .update({
                     data: data,
@@ -707,13 +707,14 @@ load();
 
 <script>
 const SUPABASE_URL = "https://bzcbulmaamuolgptdfvx.supabase.co";
-
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ6Y2J1bG1hYW11b2xncHRkZnZ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQxOTI0NjcsImV4cCI6MjA5OTc2ODQ2N30.6ijFmmZV_i601XrgcJpGYM8yEHqFlQVob3i9SIJOaoo";
 
-const supabase = window.supabase.createClient(
+const { createClient } = window.supabase;
+const supabaseClient = createClient(
     SUPABASE_URL,
     SUPABASE_ANON_KEY
 );
 </script>
+  
 </body>
 </html>
