@@ -547,18 +547,47 @@ function renderGroups(){
     });
   });
   container.querySelectorAll('[data-role="text"]').forEach(el => {
-    el.addEventListener('click', () => {
-      const item = el.closest('.item');
-      const gi = +item.dataset.gi, ii = +item.dataset.ii;
-      dept.groups[gi].items[ii].d = !dept.groups[gi].items[ii].d;
-      renderTabs(); renderGroups(); save();
+
+    el.addEventListener('dblclick', () => {
+
+        const item = el.closest('.item');
+
+        const gi = +item.dataset.gi;
+
+        const ii = +item.dataset.ii;
+
+        const current = dept.groups[gi].items[ii].t;
+
+        const updated = prompt("Edit task:", current);
+
+        if(updated !== null && updated.trim() !== ""){
+
+            dept.groups[gi].items[ii].t = updated.trim();
+
+            renderGroups();
+
+            save();
+
+        }
+
     });
-  });
+
+});
   container.querySelectorAll('[data-role="del"]').forEach(el => {
     el.addEventListener('click', () => {
       const item = el.closest('.item');
       const gi = +item.dataset.gi, ii = +item.dataset.ii;
-      dept.groups[gi].items.splice(ii, 1);
+      if(confirm("Delete this task?")){
+
+    dept.groups[gi].items.splice(ii,1);
+
+    renderTabs();
+
+    renderGroups();
+
+    save();
+
+}
       renderTabs(); renderGroups(); save();
     });
   });
