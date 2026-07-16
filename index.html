@@ -5,7 +5,7 @@
 <title>Ministry Checklist Tracker</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap');
-  
+
   :root{
     --black: #0a0908;
     --gold-1: #f3d98a;
@@ -427,8 +427,7 @@ function renderTabs(){
     const { pct } = deptCounts(dept);
     const el = document.createElement('div');
     el.className = 'tab' + (di === activeDept ? ' active' : '');
-    el.innerHTML = <span>${dept.name}</span>
-<span class="edit-dept" data-di="${di}" style="cursor:pointer;margin-left:6px;">✏️</span>
+    el.innerHTML = `<span>${dept.name}</span><span class="pct">${pct}%</span><span class="tab-x" data-di="${di}">&#10005;</span>`;
     el.addEventListener('click', (e) => {
       if(e.target.classList.contains('tab-x')) return;
       activeDept = di;
@@ -454,31 +453,8 @@ function renderTabs(){
     document.getElementById('newDeptInput').focus();
   });
   tabs.appendChild(addBtn);
-  tabs.querySelectorAll('.edit-dept').forEach(btn => {
+}
 
-    btn.onclick = function () {
-
-        const di = +this.dataset.di;
-
-        const current = data.departments[di].name;
-
-        const updated = prompt("Rename Department", current);
-
-        if (updated && updated.trim()) {
-
-            data.departments[di].name = updated.trim();
-
-            render();
-
-            save();
-
-        }
-
-    };
-
-});
-
-});
 function renderGroups(){
   const dept = data.departments[activeDept];
   const container = document.getElementById('groups');
@@ -506,9 +482,7 @@ function renderGroups(){
     groupEl.className = 'group';
     groupEl.innerHTML = `
       <div class="group-head" data-gi="${gi}">
-        <div class="group-name" data-role="groupname" data-gi="${gi}">
-    ${group.name}
-</div>
+        <div class="group-name">${group.name}</div>
         <div class="group-meta">
           <span class="group-count">${c.done}/${c.total}</span>
           <div class="mini-bar"><div class="mini-fill" style="width:${c.pct}%"></div></div>
@@ -543,30 +517,6 @@ function renderGroups(){
   container.appendChild(addGroupCard);
 
   // --- listeners ---
-  container.querySelectorAll('[data-role="groupname"]').forEach(el => {
-
-    el.addEventListener('dblclick', () => {
-
-        const gi = +el.dataset.gi;
-
-        const current = dept.groups[gi].name;
-
-        const updated = prompt("Rename team:", current);
-
-        if (updated && updated.trim()) {
-
-            dept.groups[gi].name = updated.trim();
-
-            renderGroups();
-
-            save();
-
-        }
-
-    });
-
-});
-  
   container.querySelectorAll('.group-head').forEach(el => {
     el.addEventListener('click', (e) => {
       if(e.target.closest('.group-del')) return;
