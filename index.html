@@ -663,39 +663,43 @@ async function save() {
     }
 }
 
-async function load(){
-  let usingStorage = true;
-  try{
-    const result = await withTimeout(window.storage.get(STORAGE_KEY, true), 5000);
-    if(result && result.value){
-      data = JSON.parse(result.value);
-    }else{
-      // attempt migration from old media-only tracker
-      let migratedGroups = null;
-      try{
-        const old = await withTimeout(window.storage.get(OLD_KEY, true), 5000);
-        if(old && old.value) migratedGroups = JSON.parse(old.value);
-      }catch(e){ /* no old data, that's fine */ }
+async function load() {
+    try {
+        const { data: rows, error } = await supabase
+            .from("checklist")
+            .select("*")
+            .eq("id", 1)
+            .single();
 
-      data = defaultData();
-      if(migratedGroups) data.departments[0].groups = migratedGroups;
-      await withTimeout(save(), 5000);
+        if (error) throw error;
+
+        if (rows.data && Object.keys(rows.data).length > 0) {
+            data = rows.data;
+        } else {
+            data = defaultData();
+
+            await supabase
+                .from("checklist")
+                .update({
+                    data: data,
+                    updated_at: new Date().toISOString()
+                })
+                .eq("id", 1);
+        }
+
+    } catch (err) {
+        console.error(err);
+
+        data = defaultData();
     }
-  }catch(e){
-    // Storage unavailable, timed out, or viewer isn't signed in — fall back to
-    // a local (non-synced) copy so the checklist still loads instead of spinning forever.
-    usingStorage = false;
-    data = defaultData();
-  }
-  document.getElementById('titleDisplay').textContent = data.title;
-  setupTitleEditing();
-  render();
-  if(!usingStorage){
-    const note = document.querySelector('.note');
-    note.innerHTML = '⚠️ Working offline — changes here won\'t sync to your team. Open the published link while signed in to Claude to sync.';
-  }
-}
 
+    document.getElementById("titleDisplay").textContent = data.title;
+
+    setupTitleEditing();
+
+    render();
+}
+  
 load();
 </script>
   <!-- Supabase -->
