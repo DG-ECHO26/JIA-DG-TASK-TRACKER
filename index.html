@@ -644,19 +644,23 @@ function addDepartment(){
   render(); save();
 }
 
-async function save(){
-  try{
-    await withTimeout(window.storage.set(STORAGE_KEY, JSON.stringify(data), true), 5000);
-  }catch(e){
-    console.error('Save failed (working offline):', e);
-  }
-}
+async function save() {
+    try {
+        const { error } = await supabase
+            .from("checklist")
+            .update({
+                data: data,
+                updated_at: new Date().toISOString()
+            })
+            .eq("id", 1);
 
-function withTimeout(promise, ms){
-  return Promise.race([
-    promise,
-    new Promise((_, reject) => setTimeout(() => reject(new Error('storage timeout')), ms))
-  ]);
+        if (error) {
+            console.error(error);
+        }
+
+    } catch (err) {
+        console.error(err);
+    }
 }
 
 async function load(){
@@ -693,6 +697,19 @@ async function load(){
 }
 
 load();
+</script>
+  <!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL = "https://bzcbulmaamuolgptdfvx.supabase.co";
+
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ6Y2J1bG1hYW11b2xncHRkZnZ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQxOTI0NjcsImV4cCI6MjA5OTc2ODQ2N30.6ijFmmZV_i601XrgcJpGYM8yEHqFlQVob3i9SIJOaoo";
+
+const supabase = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+);
 </script>
 </body>
 </html>
